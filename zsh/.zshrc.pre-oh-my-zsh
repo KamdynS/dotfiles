@@ -1,0 +1,24 @@
+export XDG_CONFIG_HOME="$HOME/.config"
+export XDG_DATA_HOME="$HOME/.local/share"
+export XDG_CACHE_HOME="$HOME/.cache"
+export XDG_STATE_HOME="$HOME/.local/state"
+export HISTFILE="$XDG_DATA_HOME/zsh/history"
+export HISTSIZE=10000
+export SAVEHIST=10000
+
+eval "$(/opt/homebrew/bin/brew shellenv)"
+export PATH="$HOME/Downloads/nvim-macos-arm64/bin:$PATH"
+export PATH="$PATH:$(go env GOPATH)/bin"
+
+export NVM_DIR="$HOME/.config/nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
+export PATH="/opt/homebrew/opt/ffmpeg@4/bin:$PATH"
+
+# pnpm
+export PNPM_HOME="/Users/kamdynshaeffer/.local/share/pnpm"
+case ":$PATH:" in
+  *":$PNPM_HOME:"*) ;;
+  *) export PATH="$PNPM_HOME:$PATH" ;;
+esac
+# pnpm end
