@@ -137,4 +137,20 @@ return {
             "nvim-lua/plenary.nvim",
         },
     },
+    {
+        "ej-shafran/compile-mode.nvim",
+        cmd = { "Compile", "Recompile", "NextError", "PrevError" },
+        dependencies = {
+            "nvim-lua/plenary.nvim",
+        },
+        config = function()
+            ---@type CompileModeOpts
+            vim.g.compile_mode = {
+                -- Better command-line completion with completion plugins.
+                input_word_completion = true,
+                -- Keep output in a compilation buffer for reruns/navigation.
+                use_diagnostics = false,
+            }
+        end,
+    },
 }

@@ -3,51 +3,58 @@ require "nvchad.mappings"
 -- add yours here
 
 local map = vim.keymap.set
+local function recenter()
+    vim.cmd "normal! zz"
+end
 
 map("n", ";", ":", { desc = "CMD enter command mode" })
 map("i", "jk", "<ESC>")
+map("n", "n", "nzz", { desc = "Next search result (centered)" })
+map("n", "N", "Nzz", { desc = "Previous search result (centered)" })
+map("n", "*", "*zz", { desc = "Search word forward (centered)" })
+map("n", "#", "#zz", { desc = "Search word backward (centered)" })
+map("n", "g*", "g*zz", { desc = "Search partial word forward (centered)" })
+map("n", "g#", "g#zz", { desc = "Search partial word backward (centered)" })
 
 -- map({ "n", "i", "v" }, "<C-s>", "<cmd> w <cr>")
 
--- Helper: open Telescope LSP picker where <CR> opens in a new tab.
--- If there's only one result, jump_type = "tab" auto-opens it in a new tab.
 local function lsp_telescope(picker)
     return function()
-        local actions = require "telescope.actions"
-        require("telescope.builtin")[picker] {
-            jump_type = "tab",
-            attach_mappings = function(_, map_keys)
-                map_keys("i", "<CR>", actions.select_tab)
-                map_keys("n", "<CR>", actions.select_tab)
-                return true
-            end,
-        }
+        require("telescope.builtin")[picker]()
     end
 end
 
 -- LSP navigation via Telescope (single result -> new tab, multiple -> picker)
-map("n", "gd", lsp_telescope("lsp_definitions"), { desc = "Go to definition (Telescope)" })
-map("n", "gi", lsp_telescope("lsp_implementations"), { desc = "Go to implementation (Telescope)" })
-map("n", "gr", lsp_telescope("lsp_references"), { desc = "Find references (Telescope)" })
-map("n", "gD", lsp_telescope("lsp_type_definitions"), { desc = "Go to type definition (Telescope)" })
+map("n", "gd", lsp_telescope "lsp_definitions", { desc = "Go to definition (Telescope)" })
+map("n", "gi", lsp_telescope "lsp_implementations", { desc = "Go to implementation (Telescope)" })
+map("n", "gr", lsp_telescope "lsp_references", { desc = "Find references (Telescope)" })
+map("n", "gD", lsp_telescope "lsp_type_definitions", { desc = "Go to type definition (Telescope)" })
 
 map("n", "]c", function()
     require("gitsigns").next_hunk()
+    recenter()
 end, { desc = "Next git hunk" })
 map("n", "[c", function()
     require("gitsigns").prev_hunk()
+    recenter()
 end, { desc = "Previous git hunk" })
 
 -- Lazygit floating term
 map("n", "<leader>gg", "<cmd>LazyGit<cr>", { desc = "LazyGit" })
 
--- Custom build and run script
-map("n", "<leader>rr", function()
-    require("configs.buildrun").build_and_run()
-end, { desc = "Build and Run" })
+map("n", "<leader>cc", "<cmd>Compile<cr>", { desc = "Compile (prompt)" })
+map("n", "<leader>cC", "<cmd>Recompile<cr>", { desc = "Recompile last command" })
+map("n", "<leader>cn", "<cmd>NextError<cr>", { desc = "Next compile error" })
+map("n", "<leader>cp", "<cmd>PrevError<cr>", { desc = "Previous compile error" })
 
 -- LSP utilities
 map("n", "<leader>rn", vim.lsp.buf.rename, { desc = "Rename symbol" })
 map("n", "<leader>ca", vim.lsp.buf.code_action, { desc = "Code action" })
-map("n", "[d", vim.diagnostic.goto_prev, { desc = "Previous diagnostic" })
-map("n", "]d", vim.diagnostic.goto_next, { desc = "Next diagnostic" })
+map("n", "[d", function()
+    vim.diagnostic.goto_prev()
+    recenter()
+end, { desc = "Previous diagnostic (centered)" })
+map("n", "]d", function()
+    vim.diagnostic.goto_next()
+    recenter()
+end, { desc = "Next diagnostic (centered)" })
