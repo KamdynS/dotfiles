@@ -138,6 +138,18 @@ return {
         },
     },
     {
+        "ahmedkhalf/project.nvim",
+        lazy = false,
+        config = function()
+            require("project_nvim").setup({
+                detection_methods = { "lsp", "pattern" },
+                patterns = { ".git", "Makefile", "Cargo.toml", "go.mod", "package.json", "flake.nix" },
+                silent_chdir = true,
+                scope_chdir = "global",
+            })
+        end,
+    },
+    {
         "ej-shafran/compile-mode.nvim",
         cmd = { "Compile", "Recompile", "NextError", "PrevError" },
         dependencies = {
