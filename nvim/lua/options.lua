@@ -12,5 +12,3 @@ opt.relativenumber = true
 -- Global status line
 opt.laststatus = 3
 
--- Enable inlay hints globally
-vim.lsp.inlay_hint.enable(true)

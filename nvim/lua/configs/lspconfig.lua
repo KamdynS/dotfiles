@@ -13,4 +13,9 @@ vim.lsp.config("rust_analyzer", {
 
 vim.lsp.enable(servers)
 
--- read :h vim.lsp.config for changing options of lsp servers
+-- Enable inlay hints when any LSP attaches
+vim.api.nvim_create_autocmd("LspAttach", {
+  callback = function()
+    vim.lsp.inlay_hint.enable(true)
+  end,
+})
