@@ -25,7 +25,7 @@ require("lazy").setup("plugins", {
 })
 
 -- Load theme from rice's theming system
-local theme_file = vim.fn.expand("~/.config/nvim/lua/active-theme.lua")
+local theme_file = vim.fn.expand("~/.config/nvim-theme/active.lua")
 if vim.uv.fs_stat(theme_file) then
   local theme = dofile(theme_file)
   if theme and theme.name then
