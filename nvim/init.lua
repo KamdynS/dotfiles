@@ -1,37 +1,45 @@
-vim.g.base46_cache = vim.fn.stdpath "data" .. "/base46/"
+-- Minimal Neovim 0.12 config
+-- Uses native LSP, native completion, lazy.nvim for plugins
+
+-- Leader key (before lazy)
 vim.g.mapleader = " "
+vim.g.maplocalleader = " "
 
--- bootstrap lazy and all plugins
-local lazypath = vim.fn.stdpath "data" .. "/lazy/lazy.nvim"
-
+-- Bootstrap lazy.nvim
+local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
 if not vim.uv.fs_stat(lazypath) then
-  local repo = "https://github.com/folke/lazy.nvim.git"
-  vim.fn.system { "git", "clone", "--filter=blob:none", repo, "--branch=stable", lazypath }
+  vim.fn.system({
+    "git", "clone", "--filter=blob:none",
+    "https://github.com/folke/lazy.nvim.git",
+    "--branch=stable", lazypath,
+  })
 end
-
 vim.opt.rtp:prepend(lazypath)
 
-local lazy_config = require "configs.lazy"
+-- Load config modules
+require("options")
+require("keymaps")
+require("lsp")
+require("lazy").setup("plugins", {
+  change_detection = { notify = false },
+})
 
--- load plugins
-require("lazy").setup({
-  {
-    "NvChad/NvChad",
-    lazy = false,
-    branch = "v2.5",
-    import = "nvchad.plugins",
-  },
-
-  { import = "plugins" },
-}, lazy_config)
-
--- load theme
-dofile(vim.g.base46_cache .. "defaults")
-dofile(vim.g.base46_cache .. "statusline")
-
-require "options"
-require "autocmds"
-
-vim.schedule(function()
-  require "mappings"
-end)
+-- Load theme from rice's theming system
+local theme_file = vim.fn.expand("~/.config/nvim/lua/active-theme.lua")
+if vim.uv.fs_stat(theme_file) then
+  local theme = dofile(theme_file)
+  if theme and theme.name then
+    -- Map rice theme names to nvim colorschemes
+    local colorscheme_map = {
+      ["gruvbox-light"] = "retrobox",
+      ["gruvbox-dark"] = "retrobox",
+      ["catppuccin-mocha"] = "habamax",
+      ["kanagawa"] = "habamax",
+      ["rose-pine"] = "habamax",
+      ["tokyonight"] = "habamax",
+    }
+    local bg = theme.polarity == "light" and "light" or "dark"
+    vim.opt.background = bg
+    pcall(vim.cmd.colorscheme, colorscheme_map[theme.name] or "default")
+  end
+end

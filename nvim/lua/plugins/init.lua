@@ -1,168 +1,168 @@
+-- Plugins (lazy.nvim)
 return {
-    {
-        "stevearc/conform.nvim",
-        event = "BufWritePre",
-        opts = require "configs.conform",
+  -- Treesitter (syntax highlighting)
+  {
+    "nvim-treesitter/nvim-treesitter",
+    build = ":TSUpdate",
+    event = { "BufReadPost", "BufNewFile" },
+    opts = {
+      ensure_installed = {
+        "lua", "vim", "vimdoc",
+        "rust", "go", "python",
+        "javascript", "typescript", "tsx",
+        "html", "css", "json", "yaml", "toml",
+        "c", "cpp", "nix", "bash", "markdown",
+      },
+      highlight = { enable = true },
+      indent = { enable = true },
     },
-    {
-        "ThePrimeagen/vim-be-good",
-        cmd = "VimBeGood",
+    config = function(_, opts)
+      require("nvim-treesitter.configs").setup(opts)
+    end,
+  },
+
+  -- Telescope (fuzzy finder)
+  {
+    "nvim-telescope/telescope.nvim",
+    dependencies = { "nvim-lua/plenary.nvim" },
+    cmd = "Telescope",
+    keys = {
+      { "<leader>ff", "<cmd>Telescope find_files<cr>", desc = "Find files" },
+      { "<leader>fg", "<cmd>Telescope live_grep<cr>", desc = "Live grep" },
+      { "<leader>fb", "<cmd>Telescope buffers<cr>", desc = "Buffers" },
+      { "<leader>fh", "<cmd>Telescope help_tags<cr>", desc = "Help tags" },
+      { "<leader>fr", "<cmd>Telescope oldfiles<cr>", desc = "Recent files" },
+      { "<leader>/", "<cmd>Telescope current_buffer_fuzzy_find<cr>", desc = "Search buffer" },
     },
-    {
-        "hedyhli/outline.nvim",
-        cmd = "Outline",
-        keys = {
-            { "<leader>o", "<cmd>Outline<cr>", desc = "Toggle outline" },
-        },
-        opts = {
-            outline_window = {
-                position = "right",
-                width = 25,
-            },
-            symbols = {
-                icons = {
-                    File = { icon = "󰈙", hl = "Identifier" },
-                    Module = { icon = "󰆧", hl = "Include" },
-                    Namespace = { icon = "󰅪", hl = "Include" },
-                    Package = { icon = "󰏗", hl = "Include" },
-                    Class = { icon = "", hl = "Type" },
-                    Method = { icon = "󰊕", hl = "Function" },
-                    Property = { icon = "", hl = "Identifier" },
-                    Field = { icon = "", hl = "Identifier" },
-                    Constructor = { icon = "", hl = "Special" },
-                    Enum = { icon = "", hl = "Type" },
-                    Interface = { icon = "", hl = "Type" },
-                    Function = { icon = "󰊕", hl = "Function" },
-                    Variable = { icon = "", hl = "Constant" },
-                    Constant = { icon = "", hl = "Constant" },
-                    String = { icon = "", hl = "String" },
-                    Number = { icon = "󰎠", hl = "Number" },
-                    Boolean = { icon = "", hl = "Boolean" },
-                    Array = { icon = "󰅪", hl = "Constant" },
-                    Object = { icon = "", hl = "Type" },
-                    Key = { icon = "󰌋", hl = "Type" },
-                    Null = { icon = "󰟢", hl = "Type" },
-                    Struct = { icon = "", hl = "Type" },
-                },
-            },
-        },
+    opts = {
+      defaults = {
+        file_ignore_patterns = { "node_modules", ".git/" },
+        layout_strategy = "horizontal",
+        sorting_strategy = "ascending",
+        layout_config = { prompt_position = "top" },
+      },
     },
-    {
-        "folke/trouble.nvim",
-        cmd = "Trouble",
-        keys = {
-            { "<leader>xx", "<cmd>Trouble diagnostics toggle<cr>", desc = "Diagnostics" },
-        },
+  },
+
+  -- Gitsigns (git integration)
+  {
+    "lewis6991/gitsigns.nvim",
+    event = { "BufReadPre", "BufNewFile" },
+    opts = {
+      signs = {
+        add = { text = "│" },
+        change = { text = "│" },
+        delete = { text = "_" },
+        topdelete = { text = "‾" },
+        changedelete = { text = "~" },
+      },
+      on_attach = function(bufnr)
+        local gs = require("gitsigns")
+        local map = function(mode, l, r, desc)
+          vim.keymap.set(mode, l, r, { buffer = bufnr, desc = desc })
+        end
+        map("n", "]c", function() gs.nav_hunk("next") vim.cmd("normal! zz") end, "Next hunk")
+        map("n", "[c", function() gs.nav_hunk("prev") vim.cmd("normal! zz") end, "Prev hunk")
+        map("n", "<leader>hs", gs.stage_hunk, "Stage hunk")
+        map("n", "<leader>hr", gs.reset_hunk, "Reset hunk")
+        map("n", "<leader>hp", gs.preview_hunk, "Preview hunk")
+        map("n", "<leader>hb", gs.blame_line, "Blame line")
+      end,
     },
-    {
-        "neovim/nvim-lspconfig",
-        config = function()
-            require "configs.lspconfig"
-        end,
+  },
+
+  -- Conform (formatting)
+  {
+    "stevearc/conform.nvim",
+    event = "BufWritePre",
+    cmd = "ConformInfo",
+    keys = {
+      { "<leader>cf", function() require("conform").format({ async = true }) end, desc = "Format" },
     },
-    {
-        "saecki/crates.nvim",
-        ft = { "toml" },
-        dependencies = { "nvim-lua/plenary.nvim" },
-        config = function()
-            require("crates").setup()
-        end,
+    opts = {
+      formatters_by_ft = {
+        lua = { "stylua" },
+        rust = { "rustfmt" },
+        go = { "gofmt" },
+        python = { "black" },
+        javascript = { "prettierd" },
+        typescript = { "prettierd" },
+        javascriptreact = { "prettierd" },
+        typescriptreact = { "prettierd" },
+        html = { "prettierd" },
+        css = { "prettierd" },
+        json = { "prettierd" },
+        yaml = { "prettierd" },
+        markdown = { "prettierd" },
+        nix = { "nixfmt" },
+      },
+      format_on_save = { timeout_ms = 500, lsp_fallback = true },
     },
-    {
-        "folke/which-key.nvim",
-        opts = {
-            delay = 300,
-        },
+  },
+
+  -- Trouble (diagnostics list)
+  {
+    "folke/trouble.nvim",
+    cmd = "Trouble",
+    keys = {
+      { "<leader>xx", "<cmd>Trouble diagnostics toggle<cr>", desc = "Diagnostics" },
+      { "<leader>xX", "<cmd>Trouble diagnostics toggle filter.buf=0<cr>", desc = "Buffer diagnostics" },
     },
-    {
-        "nvim-tree/nvim-tree.lua",
-        opts = {
-            hijack_directories = {
-                enable = true,
-                auto_open = true,
-            },
-            update_focused_file = {
-                enable = true,
-                update_cwd = true,
-            },
-        },
+    opts = {},
+  },
+
+  -- Which-key (keybind hints)
+  {
+    "folke/which-key.nvim",
+    event = "VeryLazy",
+    opts = {
+      delay = 300,
+      icons = { mappings = false },
     },
-    {
-        "nvim-treesitter/nvim-treesitter",
-        opts = {
-            ensure_installed = {
-                "go",
-                "lua",
-                "python",
-                "rust",
-                "haskell",
-                "javascript",
-                "typescript",
-                "c",
-                "cpp",
-                "vim",
-                "vimdoc",
-                "html",
-                "css",
-            },
-            auto_install = true,
-            highlight = { enable = true },
-            indent = { enable = true },
-        },
+    config = function(_, opts)
+      local wk = require("which-key")
+      wk.setup(opts)
+      wk.add({
+        { "<leader>f", group = "find" },
+        { "<leader>h", group = "git hunk" },
+        { "<leader>c", group = "code" },
+        { "<leader>x", group = "diagnostics" },
+      })
+    end,
+  },
+
+  -- Lazygit
+  {
+    "kdheepak/lazygit.nvim",
+    dependencies = { "nvim-lua/plenary.nvim" },
+    cmd = "LazyGit",
+    keys = {
+      { "<leader>gg", "<cmd>LazyGit<cr>", desc = "LazyGit" },
     },
-    {
-        "nvim-telescope/telescope.nvim",
-        opts = {
-            defaults = {
-                winblend = 0, -- 0 = fully opaque, 100 = fully transparent
-                border = true,
-                file_ignore_patterns = { "node_modules/.*", ".git/.*" },
-            },
-        },
+  },
+
+  -- Autopairs
+  {
+    "windwp/nvim-autopairs",
+    event = "InsertEnter",
+    opts = { check_ts = true },
+  },
+
+  -- File explorer (mini.files - lightweight)
+  {
+    "echasnovski/mini.files",
+    keys = {
+      { "<leader>e", function() require("mini.files").open() end, desc = "File explorer" },
     },
-    {
-        "kdheepak/lazygit.nvim",
-        lazy = false,
-        cmd = {
-            "LazyGit",
-            "LazyGitConfig",
-            "LazyGitCurrentFile",
-            "LazyGitFilter",
-            "LazyGitFilterCurrentFile",
-        },
-        keys = {
-            { "<leader>gg", "<cmd>LazyGit<cr>", desc = "LazyGit" },
-        },
-        dependencies = {
-            "nvim-lua/plenary.nvim",
-        },
+    opts = {
+      mappings = { go_in_plus = "<CR>" },
     },
-    {
-        "ahmedkhalf/project.nvim",
-        lazy = false,
-        config = function()
-            require("project_nvim").setup({
-                detection_methods = { "lsp", "pattern" },
-                patterns = { ".git", "Makefile", "Cargo.toml", "go.mod", "package.json", "flake.nix" },
-                silent_chdir = true,
-                scope_chdir = "global",
-            })
-        end,
-    },
-    {
-        "ej-shafran/compile-mode.nvim",
-        cmd = { "Compile", "Recompile", "NextError", "PrevError" },
-        dependencies = {
-            "nvim-lua/plenary.nvim",
-        },
-        config = function()
-            ---@type CompileModeOpts
-            vim.g.compile_mode = {
-                -- Better command-line completion with completion plugins.
-                input_word_completion = true,
-                -- Keep output in a compilation buffer for reruns/navigation.
-                use_diagnostics = false,
-            }
-        end,
-    },
+  },
+
+  -- Statusline (mini.statusline - lightweight)
+  {
+    "echasnovski/mini.statusline",
+    event = "VeryLazy",
+    opts = { use_icons = true },
+  },
 }
