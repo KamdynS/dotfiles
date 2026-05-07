@@ -149,6 +149,14 @@ return {
     opts = { check_ts = true },
   },
 
+  -- LSP defaults (cmd, filetypes, root_markers for all common LSPs)
+  -- Required for vim.lsp.enable() to actually start the servers
+  {
+    "neovim/nvim-lspconfig",
+    lazy = false,
+    priority = 900,
+  },
+
   -- Completion (blink.cmp - fast, native LSP integration)
   {
     "saghen/blink.cmp",
@@ -156,17 +164,34 @@ return {
     event = "InsertEnter",
     opts = {
       keymap = { preset = "default" },
-      appearance = { nerd_font_variant = "mono" },
+      appearance = {
+        nerd_font_variant = "mono",
+        use_nvim_cmp_as_default = false,
+      },
       sources = {
         default = { "lsp", "path", "snippets", "buffer" },
       },
       completion = {
         accept = { auto_brackets = { enabled = true } },
-        documentation = { auto_show = true, auto_show_delay_ms = 200 },
+        documentation = {
+          auto_show = true,
+          auto_show_delay_ms = 200,
+          window = { border = "rounded", max_width = 80 },
+        },
         ghost_text = { enabled = true },
         list = { selection = { preselect = false, auto_insert = true } },
+        menu = {
+          border = "rounded",
+          draw = {
+            columns = {
+              { "kind_icon", "label", "label_description", gap = 1 },
+              { "kind", "source_name" },
+            },
+            treesitter = { "lsp" },
+          },
+        },
       },
-      signature = { enabled = true },
+      signature = { enabled = true, window = { border = "rounded" } },
     },
   },
 
