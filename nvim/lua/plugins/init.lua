@@ -208,8 +208,23 @@ return {
     dependencies = { "nvim-tree/nvim-web-devicons" },
     lazy = false,
     keys = {
-      { "<leader>e", "<cmd>NvimTreeToggle<cr>", desc = "File explorer" },
-      { "<leader>fe", "<cmd>NvimTreeFindFile<cr>", desc = "Reveal current file" },
+      {
+        "<leader>e",
+        function()
+          local view = require("nvim-tree.view")
+          local api = require("nvim-tree.api")
+          if not view.is_visible() then
+            api.tree.open()
+          elseif vim.bo.filetype == "NvimTree" then
+            vim.cmd("wincmd p")
+          else
+            api.tree.focus()
+          end
+        end,
+        desc = "Tree: focus / jump back",
+      },
+      { "<leader>E", "<cmd>NvimTreeClose<cr>", desc = "Tree: close" },
+      { "<leader>fe", "<cmd>NvimTreeFindFile<cr>", desc = "Tree: reveal current file" },
     },
     opts = {
       hijack_directories = { enable = true, auto_open = true },
