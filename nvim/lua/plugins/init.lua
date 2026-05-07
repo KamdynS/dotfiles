@@ -149,14 +149,28 @@ return {
     opts = { check_ts = true },
   },
 
-  -- File explorer (mini.files - lightweight)
+  -- File explorer (nvim-tree, NvChad-style sidebar)
   {
-    "echasnovski/mini.files",
+    "nvim-tree/nvim-tree.lua",
+    dependencies = { "nvim-tree/nvim-web-devicons" },
+    cmd = { "NvimTreeToggle", "NvimTreeOpen", "NvimTreeFocus", "NvimTreeFindFile" },
     keys = {
-      { "<leader>e", function() require("mini.files").open() end, desc = "File explorer" },
+      { "<leader>e", "<cmd>NvimTreeToggle<cr>", desc = "File explorer" },
+      { "<leader>fe", "<cmd>NvimTreeFindFile<cr>", desc = "Reveal current file" },
     },
     opts = {
-      mappings = { go_in_plus = "<CR>" },
+      hijack_directories = { enable = true, auto_open = true },
+      update_focused_file = { enable = true },
+      view = { width = 32, side = "left", signcolumn = "no" },
+      renderer = {
+        group_empty = true,
+        indent_markers = { enable = true },
+        icons = { show = { folder_arrow = false } },
+      },
+      filters = { dotfiles = false },
+      git = { enable = true },
+      diagnostics = { enable = true },
+      actions = { open_file = { quit_on_open = false } },
     },
   },
 
@@ -166,4 +180,11 @@ return {
     event = "VeryLazy",
     opts = { use_icons = true },
   },
+
+  -- Colorschemes for the rice's 6 themes
+  { "ellisonleao/gruvbox.nvim",   lazy = false, priority = 1000 },
+  { "catppuccin/nvim",            lazy = false, priority = 1000, name = "catppuccin" },
+  { "rebelot/kanagawa.nvim",      lazy = false, priority = 1000 },
+  { "rose-pine/neovim",           lazy = false, priority = 1000, name = "rose-pine" },
+  { "folke/tokyonight.nvim",      lazy = false, priority = 1000 },
 }

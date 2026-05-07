@@ -5,6 +5,10 @@
 vim.g.mapleader = " "
 vim.g.maplocalleader = " "
 
+-- Disable netrw (nvim-tree replaces it)
+vim.g.loaded_netrw = 1
+vim.g.loaded_netrwPlugin = 1
+
 -- Bootstrap lazy.nvim
 local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
 if not vim.uv.fs_stat(lazypath) then
@@ -24,22 +28,35 @@ require("lazy").setup("plugins", {
   change_detection = { notify = false },
 })
 
--- Load theme from rice's theming system
-local theme_file = vim.fn.expand("~/.config/nvim-theme/active.lua")
-if vim.uv.fs_stat(theme_file) then
-  local theme = dofile(theme_file)
-  if theme and theme.name then
-    -- Map rice theme names to nvim colorschemes
-    local colorscheme_map = {
-      ["gruvbox-light"] = "retrobox",
-      ["gruvbox-dark"] = "retrobox",
-      ["catppuccin-mocha"] = "habamax",
-      ["kanagawa"] = "habamax",
-      ["rose-pine"] = "habamax",
-      ["tokyonight"] = "habamax",
-    }
-    local bg = theme.polarity == "light" and "light" or "dark"
-    vim.opt.background = bg
-    pcall(vim.cmd.colorscheme, colorscheme_map[theme.name] or "default")
-  end
+-- Theme application: read ~/.config/nvim-theme/active.lua and apply colorscheme
+local theme_map = {
+  ["gruvbox-light"]    = { scheme = "gruvbox",         bg = "light" },
+  ["gruvbox-dark"]     = { scheme = "gruvbox",         bg = "dark"  },
+  ["catppuccin-mocha"] = { scheme = "catppuccin-mocha", bg = "dark" },
+  ["kanagawa"]         = { scheme = "kanagawa",        bg = "dark"  },
+  ["rose-pine"]        = { scheme = "rose-pine",       bg = "dark"  },
+  ["tokyonight"]       = { scheme = "tokyonight",      bg = "dark"  },
+}
+
+local function apply_theme()
+  local theme_file = vim.fn.expand("~/.config/nvim-theme/active.lua")
+  if not vim.uv.fs_stat(theme_file) then return end
+  local ok, theme = pcall(dofile, theme_file)
+  if not ok or type(theme) ~= "table" or not theme.name then return end
+  local t = theme_map[theme.name]
+  if not t then return end
+  vim.opt.background = t.bg
+  pcall(vim.cmd.colorscheme, t.scheme)
+end
+
+apply_theme()
+
+-- Watch nvim-theme directory; re-apply when active.lua changes
+local watcher = vim.uv.new_fs_event()
+if watcher then
+  local watch_dir = vim.fn.expand("~/.config/nvim-theme")
+  watcher:start(watch_dir, {}, vim.schedule_wrap(function(err, filename)
+    if err or filename ~= "active.lua" then return end
+    apply_theme()
+  end))
 end
