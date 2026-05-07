@@ -163,7 +163,11 @@ return {
     version = "*",
     event = "InsertEnter",
     opts = {
-      keymap = { preset = "default" },
+      keymap = {
+        preset = "default",
+        ["<Tab>"] = { "select_next", "fallback" },
+        ["<S-Tab>"] = { "select_prev", "fallback" },
+      },
       appearance = {
         nerd_font_variant = "mono",
         use_nvim_cmp_as_default = false,
