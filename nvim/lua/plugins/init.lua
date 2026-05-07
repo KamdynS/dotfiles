@@ -149,6 +149,27 @@ return {
     opts = { check_ts = true },
   },
 
+  -- Completion (blink.cmp - fast, native LSP integration)
+  {
+    "saghen/blink.cmp",
+    version = "*",
+    event = "InsertEnter",
+    opts = {
+      keymap = { preset = "default" },
+      appearance = { nerd_font_variant = "mono" },
+      sources = {
+        default = { "lsp", "path", "snippets", "buffer" },
+      },
+      completion = {
+        accept = { auto_brackets = { enabled = true } },
+        documentation = { auto_show = true, auto_show_delay_ms = 200 },
+        ghost_text = { enabled = true },
+        list = { selection = { preselect = false, auto_insert = true } },
+      },
+      signature = { enabled = true },
+    },
+  },
+
   -- File explorer (nvim-tree, NvChad-style sidebar)
   {
     "nvim-tree/nvim-tree.lua",

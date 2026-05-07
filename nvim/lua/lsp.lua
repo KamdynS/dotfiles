@@ -40,7 +40,33 @@ vim.lsp.config("gopls", {
     gopls = {
       analyses = { unusedparams = true },
       staticcheck = true,
+      hints = {
+        assignVariableTypes = true,
+        compositeLiteralFields = true,
+        compositeLiteralTypes = true,
+        constantValues = true,
+        functionTypeParameters = true,
+        parameterNames = true,
+        rangeVariableTypes = true,
+      },
     },
+  },
+})
+
+local ts_inlay = {
+  includeInlayParameterNameHints = "all",
+  includeInlayParameterNameHintsWhenArgumentMatchesName = false,
+  includeInlayFunctionParameterTypeHints = true,
+  includeInlayVariableTypeHints = true,
+  includeInlayPropertyDeclarationTypeHints = true,
+  includeInlayFunctionLikeReturnTypeHints = true,
+  includeInlayEnumMemberValueHints = true,
+}
+
+vim.lsp.config("ts_ls", {
+  settings = {
+    typescript = { inlayHints = ts_inlay },
+    javascript = { inlayHints = ts_inlay },
   },
 })
 
@@ -68,10 +94,7 @@ vim.api.nvim_create_autocmd("LspAttach", {
       vim.lsp.inlay_hint.enable(true, { bufnr = bufnr })
     end
 
-    -- Enable native completion (0.12+)
-    if client and client:supports_method("textDocument/completion") then
-      vim.lsp.completion.enable(true, args.data.client_id, bufnr, { autotrigger = true })
-    end
+    -- Completion handled by blink.cmp (see plugins/init.lua)
 
     -- LSP keymaps
     local map = function(mode, lhs, rhs, desc)
@@ -86,5 +109,8 @@ vim.api.nvim_create_autocmd("LspAttach", {
     map("n", "<leader>rn", vim.lsp.buf.rename, "Rename symbol")
     map("n", "<leader>ca", vim.lsp.buf.code_action, "Code action")
     map("n", "<leader>f", function() vim.lsp.buf.format({ async = true }) end, "Format buffer")
+    map("n", "<leader>th", function()
+      vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled())
+    end, "Toggle inlay hints")
   end,
 })
