@@ -1,8 +1,9 @@
 -- Plugins (lazy.nvim)
 return {
-  -- Treesitter (syntax highlighting)
+  -- Treesitter (syntax highlighting) - pinned to master branch (legacy API)
   {
     "nvim-treesitter/nvim-treesitter",
+    branch = "master",
     build = ":TSUpdate",
     event = { "BufReadPost", "BufNewFile" },
     opts = {
