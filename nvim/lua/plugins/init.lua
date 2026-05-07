@@ -1,24 +1,27 @@
 -- Plugins (lazy.nvim)
 return {
-  -- Treesitter (syntax highlighting) - pinned to master branch (legacy API)
+  -- Treesitter (syntax highlighting) - main branch, compatible with nvim 0.12
   {
     "nvim-treesitter/nvim-treesitter",
-    branch = "master",
+    branch = "main",
+    lazy = false,
     build = ":TSUpdate",
-    event = { "BufReadPost", "BufNewFile" },
-    opts = {
-      ensure_installed = {
-        "lua", "vim", "vimdoc",
+    config = function()
+      require("nvim-treesitter").install({
+        "lua", "vim", "vimdoc", "query",
         "rust", "go", "python",
         "javascript", "typescript", "tsx",
         "html", "css", "json", "yaml", "toml",
-        "c", "cpp", "nix", "bash", "markdown",
-      },
-      highlight = { enable = true },
-      indent = { enable = true },
-    },
-    config = function(_, opts)
-      require("nvim-treesitter.configs").setup(opts)
+        "c", "cpp", "nix", "bash",
+        "markdown", "markdown_inline",
+      })
+
+      -- Enable highlighting per buffer when filetype is detected
+      vim.api.nvim_create_autocmd("FileType", {
+        callback = function(args)
+          pcall(vim.treesitter.start, args.buf)
+        end,
+      })
     end,
   },
 
