@@ -3,7 +3,8 @@
 
 -- Diagnostic config
 vim.diagnostic.config({
-  virtual_text = { spacing = 4, prefix = "●" },
+  virtual_lines = { current_line = true },  -- multi-line, wrapped, only on cursor line
+  virtual_text = false,
   signs = true,
   underline = true,
   update_in_insert = false,
