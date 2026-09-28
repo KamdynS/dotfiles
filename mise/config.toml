@@ -1,0 +1,38 @@
+[tools]
+node = "22.23.2"
+go = "1.26.7"
+rust = "1.97.1"
+python = "3.12.14"
+zig = "0.16.0"
+"aqua:hashicorp/terraform" = "1.16.1"
+"aqua:helm/helm" = "4.2.4"
+
+"go:golang.org/x/tools/gopls" = "0.23.0"
+"npm:pyright" = "1.1.412"
+"aqua:rust-lang/rust-analyzer" = "2026-08-03"
+"aqua:LuaLS/lua-language-server" = "3.19.1"
+"npm:typescript-language-server" = "5.3.0"
+"npm:vscode-langservers-extracted" = "4.10.0"
+
+"go:github.com/go-delve/delve/cmd/dlv" = "1.27.1"
+"github:golangci/golangci-lint" = "2.13.2"
+"go:gotest.tools/gotestsum" = "1.13.0"
+"go:mvdan.cc/gofumpt" = "0.12.0"
+"go:github.com/golangci/golines" = "0.15.0"
+"go:github.com/mgechev/revive" = "1.16.0"
+"go:subsplash.io/go/tools/tokens/cmd/get-token" = "0.0.0-20240809155258-a3bfece04d81"
+"cargo:stylua" = "2.5.2"
+"npm:@fsouza/prettierd" = "0.28.0"
+
+"npm:pnpm" = "11.25.0"
+"npm:prettier" = "3.9.6"
+"npm:@yarnpkg/cli-dist" = "4.14.1"
+"aqua:int128/kubelogin" = "1.36.3"
+"aqua:ahmetb/kubectx" = "0.11.0"
+"go:github.com/golang-migrate/migrate/v4/cmd/migrate" = "4.20.1"
+"aqua:supabase/cli" = "2.111.0"
+"github:modem-dev/hunk" = { version = "0.10.0", bin = "hunk" }
+"github:anomalyco/opencode" = "1.18.30"
+"github:composer/composer" = { version = "2.10.3", bin = "composer" }
+"pipx:sqlfluff" = "4.3.0"
+"aqua:anthropics/claude-code" = "2.1.266"

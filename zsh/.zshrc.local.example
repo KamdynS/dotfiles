@@ -1,0 +1,9 @@
+# Copy to ~/.config/zsh/.zshrc.local for machine-local interactive overrides.
+# Keep secrets in ~/.secrets/zsh.env (sourced by .zshenv/home-manager).
+
+# Example local aliases:
+# alias k='kubectl'
+# alias tf='terraform'
+
+# Example local prompt tweak:
+# export POWERLEVEL9K_DISABLE_CONFIGURATION_WIZARD=true

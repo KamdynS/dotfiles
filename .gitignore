@@ -1,3 +1,15 @@
 /zsh/.zsh_history
 /zsh/.zcompdump*
+/zsh/.zshrc.local
 /SmartSetMasterErgo (Mac)/
+**/node_modules/
+*.hm-backup
+.DS_Store
+/chezmoi/
+/cursor/
+/fontconfig/
+/homebrew/
+/hunk/state.json
+/nvim.hm-backup/
+/omniwm/runtime-state.json
+/zsh/ohmyzsh/

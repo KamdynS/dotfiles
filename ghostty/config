@@ -1,0 +1,12 @@
+
+font-family = JetBrains Mono
+font-size = 14
+theme = Gruvbox Light
+
+# Window padding
+window-padding-x = 8
+window-padding-y = 8
+
+# Opacity
+background-opacity = 1.00
+unfocused-split-opacity = 0.85
